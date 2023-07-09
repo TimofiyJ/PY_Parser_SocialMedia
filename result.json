@@ -1,0 +1,11 @@
+{"author":"name",
+"content_type":"repost or post",
+"source":"scource if repost",
+"source_text":"text or image",
+"text":"text",
+"likes":0,
+"reposts":0,
+"comments":0,
+"views":0,
+"date":"relative(?) date"
+}
