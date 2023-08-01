@@ -10,9 +10,9 @@ previous_directory = os.path.dirname(parent_directory)
 previous_directory = os.path.dirname(parent_directory)
 item_path = os.path.join(previous_directory, "vk")
 name_of_output = str(input("Give file a name: "))
-
+result = []
 # Writing to sample.json 
-with open(f'{parent_directory}/result.json', 'a',encoding="cp1251", errors='ignore') as file_write:
+with open(f'{parent_directory}/{name_of_output}.json', 'a',encoding="cp1251", errors='ignore') as file_write:
 
     with open(f"{item_path}/No Ukraine!.html",encoding="cp1251") as file:
         src = file.read()
@@ -143,5 +143,6 @@ with open(f'{parent_directory}/result.json', 'a',encoding="cp1251", errors='igno
         "comment_section":comment_section,
         "content_result":content_result
         }
-        json.dump(info,file_write,ensure_ascii=False)
-        #file_write.write(json_object)
+        result.append(info)
+    json.dump(result,file_write,ensure_ascii=False)
+#file_write.write(json_object)
