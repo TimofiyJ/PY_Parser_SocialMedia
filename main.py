@@ -9,6 +9,7 @@ parent_directory = os.path.dirname(current_file_path)
 previous_directory = os.path.dirname(parent_directory)
 previous_directory = os.path.dirname(parent_directory)
 item_path = os.path.join(previous_directory, "vk")
+name_of_output = str(input("Give file a name: "))
 
 # Writing to sample.json 
 with open(f'{parent_directory}/result.json', 'a',encoding="cp1251", errors='ignore') as file_write:
@@ -36,7 +37,7 @@ with open(f'{parent_directory}/result.json', 'a',encoding="cp1251", errors='igno
                 for em in emoji:
                     if em in post_text:
                         index = post_text.contents.index(em)
-                        #post_text.contents[index].replace_with(em['alt'])
+                        post_text.contents[index].replace_with(em['alt'])
             post_text = post_text.text
         #Adding emojis to the text
 
@@ -63,7 +64,7 @@ with open(f'{parent_directory}/result.json', 'a',encoding="cp1251", errors='igno
                     for em in emoji:
                         if em in post_source_text: 
                             index = post_source_text.contents.index(em)
-                            #post_source_text.contents[index].replace_with(em['alt'])
+                            post_source_text.contents[index].replace_with(em['alt'])
                 post_source_text = post_source_text.text
             #Adding emojis to the text
 
