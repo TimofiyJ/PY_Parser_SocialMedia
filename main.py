@@ -4,17 +4,15 @@ import cssutils
 import os
 from bs4 import BeautifulSoup
 import json
-current_file_path = os.path.abspath(__file__)
-parent_directory = os.path.dirname(current_file_path)
-previous_directory = os.path.dirname(parent_directory)
-previous_directory = os.path.dirname(parent_directory)
-item_path = os.path.join(previous_directory, "vk")
-name_of_output = str(input("Give file a name: "))
+
+
+name_of_output = str(input("Path to the output file:"))
+name_of_input = str(input("Path to the input file:"))
 result = []
 # Writing to sample.json 
-with open(f'{parent_directory}/{name_of_output}.json', 'a',encoding="cp1251", errors='ignore') as file_write:
+with open(f'{name_of_output}', 'a',encoding="cp1251", errors='ignore') as file_write:
 
-    with open(f"{item_path}/No Ukraine!.html",encoding="cp1251") as file:
+    with open(f"{name_of_input}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
 
@@ -75,10 +73,7 @@ with open(f'{parent_directory}/{name_of_output}.json', 'a',encoding="cp1251", er
         post_comments = post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")!=None else 0
         post_date = post.find("span",class_="rel_date").text if post.find("span",class_="rel_date")!=None else ""
         post_views = post.find("span",class_="_views").text if post.find("span",class_="_views")!=None else 0
-        #print(post_text[2396:2397])
-        #print(post_views)
-        #print("\n\n\n\n\n")
-        #GETTING CONTENT#
+
         content_resource = post.find("div",class_="page_post_sized_thumbs")
         if content_resource:
             contents = content_resource.findChildren("a" , recursive=False)

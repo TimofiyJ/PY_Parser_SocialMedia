@@ -1,2 +1,4 @@
 .venv
 .vscode
+output/parser.exe
+output
