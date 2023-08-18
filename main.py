@@ -4,18 +4,18 @@ import cssutils
 import os
 from bs4 import BeautifulSoup
 import json
+import sys
 
-
-name_of_output = str(input("Path to the output file:"))
-name_of_input = str(input("Path to the input file:"))
+# name_of_output = str(input("Path to the output file:"))
+# name_of_input = str(input("Path to the input file:"))
 result = []
 # Writing to sample.json 
-with open(f'{name_of_output}', 'a',encoding="cp1251", errors='ignore') as file_write:
+with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write:
 
-    with open(f"{name_of_input}",encoding="cp1251") as file:
+    with open(f"{sys.argv[1]}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
-
+    
     posts = soup.find_all("div",class_ = "_post_content") # array of posts of the page
     for post in posts:
         if len(post['class'])>1: #if the class name includes other blocks reply_wrap _reply_content etc.
@@ -129,7 +129,7 @@ with open(f'{name_of_output}', 'a',encoding="cp1251", errors='ignore') as file_w
         "post_source": post_source,
         "post_group_author": post_group_author,
         "post_source_text":post_source_text,
-        "post_text":post_text[2395:2396],
+        "post_text":post_text,
         "post_likes":post_likes,
         "post_reposts":post_reposts,
         "post_comments":post_comments,
