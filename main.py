@@ -5,24 +5,29 @@ import os
 from bs4 import BeautifulSoup
 import json
 import sys
-
-# name_of_output = str(input("Path to the output file:"))
-# name_of_input = str(input("Path to the input file:"))
 result = []
 # Writing to sample.json 
-with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write:
+with open(f'{sys.argv[1]}', 'a',encoding="utf-8", errors='ignore') as file_write:
 
-    with open(f"{sys.argv[1]}",encoding="cp1251") as file:
+    with open(f"{sys.argv[2]}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
-    
-    posts = soup.find_all("div",class_ = "_post_content") # array of posts of the page
+
+    page_description=""
+    page_subscribers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else "" 
+    node_type_name = "VkSearch" if soup.find("div",id = "page_wall_posts")==None else True
+    if node_type_name==True:
+        node_type_name = "VkAccount" if soup.find("div",id = "page_wall_posts")["data-stat-container"]=="user_wall" else "VkGroup"
+        if node_type_name=="VkGroup":
+            page_description = soup.find("div",class_ = "page_description").text
+    posts = soup.find_all("div",class_ = "_post") # array of posts of the page
     for post in posts:
-        if len(post['class'])>1: #if the class name includes other blocks reply_wrap _reply_content etc.
+        if post['class'].count("post")==0: #if the class name includes other blocks reply_wrap _reply_content etc.
             continue
-
+        post_id = post["data-post-id"]
         post_author = post.find("a",class_ = "author").text if post.find("a",class_ = "author")!=None else "" # finding author of the post
-
+        post_author_id=post.find("a",class_ = "author")["data-from-id"] if post.find("a",class_ = "author")!=None else ""
+        post_link=post.find("a",class_ = "post_link")["href"] if post.find("a",class_ = "post_link")!=None else ""
         content_type = True if (post.find("div",class_="copy_quote"))==None else False #true - post; fasle - repost
         content_type = "post" if content_type==True else "repost"
 
@@ -71,7 +76,7 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
         post_likes = post.find("div",class_="PostButtonReactions__title _counter_anim_container").text if post.find("div",class_="PostButtonReactions__title _counter_anim_container")!=None and post.find("div",class_="PostButtonReactions__title _counter_anim_container").text!="" else 0
         post_reposts = post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")!=None else 0
         post_comments = post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")!=None else 0
-        post_date = post.find("span",class_="rel_date").text if post.find("span",class_="rel_date")!=None else ""
+        post_date = post.find("span",class_="rel_date")["time"] if post.find("span",class_="rel_date").time!=None else ""
         post_views = post.find("span",class_="_views").text if post.find("span",class_="_views")!=None else 0
 
         content_resource = post.find("div",class_="page_post_sized_thumbs")
@@ -125,9 +130,15 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
         # Data to be written
         info = {
         "post_author": post_author,
+        "post_author_id":post_author_id,
+        "post_id": post_id,
+        "post_link":post_link,
+        "node_type_name":node_type_name,
         "content_type": content_type,
         "post_source": post_source,
         "post_group_author": post_group_author,
+        "page_description":page_description,
+        "page_subscribers":page_subscribers,
         "post_source_text":post_source_text,
         "post_text":post_text,
         "post_likes":post_likes,
