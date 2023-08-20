@@ -7,19 +7,36 @@ import json
 import sys
 result = []
 # Writing to sample.json 
-with open(f'{sys.argv[1]}', 'a',encoding="utf-8", errors='ignore') as file_write:
+a1=input()
+a2=input()
+with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
 
-    with open(f"{sys.argv[2]}",encoding="cp1251") as file:
+    with open(f"{a1}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
-
+    owner_followers = 0
+    owner_friends = 0
     page_description=""
-    page_subscribers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else "" 
-    node_type_name = "VkSearch" if soup.find("div",id = "page_wall_posts")==None else True
+    node_type_name = "" if soup.find("div",id = "page_wall_posts")==None else True
     if node_type_name==True:
         node_type_name = "VkAccount" if soup.find("div",id = "page_wall_posts")["data-stat-container"]=="user_wall" else "VkGroup"
         if node_type_name=="VkGroup":
             page_description = soup.find("div",class_ = "page_description").text
+            owner_followers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else 0 
+            owner_followers = owner_followers.replace(" ","")
+        else:
+            #find_all("span",class_="header_count fl_l")
+            owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else 0
+            owner_friends=owner_list_info[0].find("span",class_="header_count fl_l").text if owner_list_info[0]!=None else 0
+            owner_followers = owner_list_info[1].find("span",class_="header_count fl_l").text if owner_list_info[1]!=None else 0
+            owner_photo =owner_list_info[2].find("span",class_="header_count fl_l").text if owner_list_info[2]!=None else 0
+            owner_video = owner_list_info[3].find("span",class_="header_count fl_l").text if owner_list_info[3]!=None else 0
+            owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
+            print(owner_friends)
+            print(owner_followers)
+            print(owner_photo)
+            print(owner_video)
+            print(owner_audio)
     posts = soup.find_all("div",class_ = "_post") # array of posts of the page
     for post in posts:
         if post['class'].count("post")==0: #if the class name includes other blocks reply_wrap _reply_content etc.
@@ -76,9 +93,12 @@ with open(f'{sys.argv[1]}', 'a',encoding="utf-8", errors='ignore') as file_write
         post_likes = post.find("div",class_="PostButtonReactions__title _counter_anim_container").text if post.find("div",class_="PostButtonReactions__title _counter_anim_container")!=None and post.find("div",class_="PostButtonReactions__title _counter_anim_container").text!="" else 0
         post_reposts = post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")!=None else 0
         post_comments = post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")!=None else 0
-        post_date = post.find("span",class_="rel_date")["time"] if post.find("span",class_="rel_date").time!=None else ""
-        post_views = post.find("span",class_="_views").text if post.find("span",class_="_views")!=None else 0
-
+        post_date = post.find("span",class_="rel_date") if post.find("span",class_="rel_date")!=None else ""
+        post_views = post.find("div",class_="like_views like_views--inActionPanel")["title"] if post.find("div",class_="like_views like_views--inActionPanel")!=None else 0
+        if 'time' in post_date.attrs:
+            post_date=post_date['time']
+        else:
+            post_date = 0
         content_resource = post.find("div",class_="page_post_sized_thumbs")
         if content_resource:
             contents = content_resource.findChildren("a" , recursive=False)
@@ -138,7 +158,8 @@ with open(f'{sys.argv[1]}', 'a',encoding="utf-8", errors='ignore') as file_write
         "post_source": post_source,
         "post_group_author": post_group_author,
         "page_description":page_description,
-        "page_subscribers":page_subscribers,
+        "owner_followers":owner_followers,
+        "owner_friends":owner_friends,
         "post_source_text":post_source_text,
         "post_text":post_text,
         "post_likes":post_likes,
