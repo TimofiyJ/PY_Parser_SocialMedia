@@ -18,26 +18,8 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
     owner_video = 0
     owner_audio = 0
     page_description=""
-    node_type_name = "" if soup.find("div",id = "page_wall_posts")==None else True
-    if node_type_name==True:
-        node_type_name = "VkAccount" if soup.find("div",id = "page_wall_posts")["data-stat-container"]=="user_wall" else "VkGroup"
-        if node_type_name=="VkGroup":
-            page_description = soup.find("div",class_ = "page_description").text
-            owner_followers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else 0 
-            owner_followers = owner_followers.replace(" ","")
-        else:
-            #find_all("span",class_="header_count fl_l")
-            owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else 0
-            owner_friends=owner_list_info[0].find("span",class_="header_count fl_l").text if owner_list_info[0]!=None else 0
-            owner_friends=owner_friends.replace(" ","")
-            owner_followers = owner_list_info[1].find("span",class_="header_count fl_l").text if owner_list_info[1]!=None else 0
-            owner_followers=owner_followers.replace(" ","")
-            owner_photo =owner_list_info[2].find("span",class_="header_count fl_l").text if owner_list_info[2]!=None else 0
-            owner_photo=owner_photo.replace(" ","")
-            owner_video = owner_list_info[3].find("span",class_="header_count fl_l").text if owner_list_info[3]!=None else 0
-            owner_video=owner_video.replace(" ","")
-            owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
-            owner_audio=owner_audio.replace(" ","")
+    node_type_name=""
+    #node_type_name = False if soup.find("div",id = "page_wall_posts")==None else True
     posts = soup.find_all("div",class_ = "_post") # array of posts of the page
     for post in posts:
         if post['class'].count("post")==0: #if the class name includes other blocks reply_wrap _reply_content etc.
@@ -45,6 +27,31 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
         post_id = post["data-post-id"]
         post_author = post.find("a",class_ = "author").text if post.find("a",class_ = "author")!=None else "" # finding author of the post
         post_author_id=post.find("a",class_ = "author")["data-from-id"] if post.find("a",class_ = "author")!=None else ""
+        if post_author_id[0]=="-":
+            node_type_name = "VkGroup"
+        else:
+            node_type_name="VkAccount"
+        if node_type_name!="":
+            if node_type_name=="VkGroup":
+                page_description = soup.find("div",class_ = "page_description").text if soup.find("div",class_ = "page_description")!=None else ""
+                owner_followers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else 0 
+                if owner_followers!=0:
+                    owner_followers = owner_followers.replace(" ","")
+            else:
+                #find_all("span",class_="header_count fl_l")
+                owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else ""
+                if owner_list_info!="":
+                    owner_friends=owner_list_info[0].find("span",class_="header_count fl_l").text if owner_list_info[0]!=None else 0
+                    owner_friends=owner_friends.replace(" ","")
+                    owner_followers = owner_list_info[1].find("span",class_="header_count fl_l").text if owner_list_info[1]!=None else 0
+                    owner_followers=owner_followers.replace(" ","")
+                    owner_photo =owner_list_info[2].find("span",class_="header_count fl_l").text if owner_list_info[2]!=None else 0
+                    owner_photo=owner_photo.replace(" ","")
+                    owner_video = owner_list_info[3].find("span",class_="header_count fl_l").text if owner_list_info[3]!=None else 0
+                    owner_video=owner_video.replace(" ","")
+                    owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
+                    owner_audio=owner_audio.replace(" ","")
+
         post_link=post.find("a",class_ = "post_link")["href"] if post.find("a",class_ = "post_link")!=None else ""
         content_type = True if (post.find("div",class_="copy_quote"))==None else False #true - post; fasle - repost
         content_type = "post" if content_type==True else "repost"
