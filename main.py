@@ -6,10 +6,12 @@ from bs4 import BeautifulSoup
 import json
 import sys
 result = []
+a1=input()
+a2=input()
 # Writing to sample.json 
-with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write:
+with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
 
-    with open(f"{sys.argv[1]}",encoding="cp1251") as file:
+    with open(f"{a1}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
     owner_followers = 0
@@ -27,10 +29,12 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
         post_id = post["data-post-id"]
         post_author = post.find("a",class_ = "author").text if post.find("a",class_ = "author")!=None else "" # finding author of the post
         post_author_id=post.find("a",class_ = "author")["data-from-id"] if post.find("a",class_ = "author")!=None else ""
-        if post_author_id[0]=="-":
-            node_type_name = "VkGroup"
-        else:
-            node_type_name="VkAccount"
+        print(post_author_id)
+        if post_author_id!="":
+            if post_author_id[0]=="-":
+                node_type_name = "VkGroup"
+            else:
+                node_type_name="VkAccount"
         if node_type_name!="":
             if node_type_name=="VkGroup":
                 page_description = soup.find("div",class_ = "page_description").text if soup.find("div",class_ = "page_description")!=None else ""
@@ -109,6 +113,7 @@ with open(f'{sys.argv[2]}', 'a',encoding="utf-8", errors='ignore') as file_write
         else:
             post_date = 0
         content_resource = post.find("div",class_="page_post_sized_thumbs")
+        contents=[]
         if content_resource:
             contents = content_resource.findChildren("a" , recursive=False)
         content_result = {} 
