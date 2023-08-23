@@ -5,7 +5,9 @@ import os
 from bs4 import BeautifulSoup
 import json
 import sys
+
 result = []
+
 a1=input()
 a2=input()
 # Writing to sample.json 
@@ -14,13 +16,7 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
     with open(f"{a1}",encoding="cp1251") as file:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
-    owner_followers = 0
-    owner_friends = 0
-    owner_photo = 0
-    owner_video = 0
-    owner_audio = 0
-    page_description=""
-    node_type_name=""
+
     #node_type_name = False if soup.find("div",id = "page_wall_posts")==None else True
     posts = soup.find_all("div",class_ = "_post") # array of posts of the page
     for post in posts:
