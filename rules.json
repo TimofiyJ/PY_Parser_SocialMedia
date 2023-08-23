@@ -14,13 +14,10 @@
     "post_source_text":{"id":[],"class":[],"variable":[],"tag":[]},
     "post_text":{"id":[""],"class":["wall_post_text"],"variable":[""],"tag":["div"]},
     "post_likes":{"id":[""],"class":["PostButtonReactions__title _counter_anim_container"],"variable":[""],"tag":["div"]},
-    "post_reposts":{"id":[""],"class":["PostBottomAction PostBottomAction--withBg share _share"],"variable":["data-count"],"tag":["div"]},
+    "post_reposts":{"id":["",""],"class":["PostBottomAction PostBottomAction--withBg share _share","PostBottomAction PostBottomAction--withBg share _share empty"],"variable":["data-count","data-count"],"tag":["div","div"]},
     "post_comments":{"id":[""],"class":["PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap"],"variable":["data-count"],"tag":["div"]},
     "post_views":{"id":[""],"class":["like_views like_views--inActionPanel"],"variable":["title"],"tag":["div"]},
     "post_date":{"id":[""],"class":["rel_date rel_date_needs_update"],"variable":["time"],"tag":["span"]},
-    "comments":{"id":[],"class":[],"variable":[],"tag":[]},
-    "comment_author":{"id":[],"class":[],"variable":[],"tag":[]},
-    "comment_text":{"id":[],"class":[],"variable":[],"tag":[]},
-    "comment_likes":{"id":[],"class":[],"variable":[],"tag":[]},
+    "comments":{"id":[],"class":[],"variable":[],"tag":[], "comment_author":{"id":[],"class":[],"variable":[],"tag":[]},"comment_text":{"id":[],"class":[],"variable":[],"tag":[]},"comment_likes":{"id":[],"class":[],"variable":[],"tag":[]}},
     "content_result":{"id":[],"class":[],"variable":[],"tag":[]}
 }
