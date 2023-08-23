@@ -8,8 +8,52 @@ import sys
 
 result = []
 
+names=[]
+data={}
+
+#def calculate_comments()
+
+def get_info(name,parameters,source):
+
+    for i in range(len(parameters["class"])): #class is just for example, every parameter should contain equal elements
+
+        if parameters["class"][i]!="": 
+
+            if parameters["variable"][i]=="":
+                name = source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}") if source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}")!=None else f"{i}-step-not-found"
+            else:
+                name = source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}") if source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}")!=None else f"{i}-step-not-found"
+                if name!= f"{i}-step-not-found" and f"{parameters['variable'][i]}" in name.attrs:
+                    name = name[f"{parameters['variable'][i]}"]
+                else:
+                    name = f"{i}-step-not-found"
+    
+        else:
+            if parameters["variable"][i]=="":
+                name = source.find(f"{parameters['tag'][i]}",id=f"{parameters['id'][i]}") if source.find(f"{parameters['tag'][i]}",id=f"{parameters['id'][i]}")!=None else f"{i}-step-not-found"
+            else:
+                name = source.find(f"{parameters['tag'][i]}",id=f"{parameters['id'][i]}")[f"{parameters['variable'][i]}"] if source.find(f"{parameters['tag'][i]}",id=f"{parameters['id'][i]}")[f"{parameters['variable'][i]}"]!=None else f"{i}-step-not-found"
+                if name!=f"{i}-step-not-found" and f"{parameters['variable'][i]}" in name.attrs:
+                    name = name[f"{parameters['variable'][i]}"]
+                else:
+                    name = f"{i}-step-not-found"
+                    
+        if name==f"{i}-step-not-found":
+            break
+        else:
+            source=name
+    if len(parameters['variable'])>0 and parameters['variable'][-1]=="":
+        if name.text!=None:
+            name=name.text
+    return name
+
 a1=input()
 a2=input()
+a3=input()
+
+f = open(f'{a3}')
+data=json.load(f)
+    
 # Writing to sample.json 
 with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
 
@@ -17,15 +61,69 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
         src = file.read()
     soup = BeautifulSoup(src, "html.parser")
 
-    #node_type_name = False if soup.find("div",id = "page_wall_posts")==None else True
     posts = soup.find_all("div",class_ = "_post") # array of posts of the page
+
     for post in posts:
-        if post['class'].count("post")==0: #if the class name includes other blocks reply_wrap _reply_content etc.
-            continue
-        post_id = post["data-post-id"]
-        post_author = post.find("a",class_ = "author").text if post.find("a",class_ = "author")!=None else "" # finding author of the post
+
+        info = {}
+
+        for key in data:
+            info[key] = get_info(key,data[key],soup)  
+
+        if info["post_link"]!=None:
+            info["post_link"] = "vk.com"+info["post_link"]
+
+        comments = post.find_all("div",class_ = "reply_content")
+        comment_section= {}
+
+        for comment in comments:
+            comment_author = comment.find("a",class_ = "author").text if comment.find("a",class_ = "author")!=None else ""
+            comment_text = comment.find("div",class_ = "wall_reply_text").text if comment.find("div",class_ = "wall_reply_text")!=None else ""
+            comment_likes = comment.find("a",class_ = "like_btn")['data-count'] if comment.find("a",class_ = "like_btn")!=None else 0
+            if comment_author!="":
+                comment_container = {}
+                comment_container[comment_text] = comment_likes
+                comment_section[comment_author] = comment_container
+
+        info["comment_section"]=comment_section
+
+        print(info)
+
+        quit()
+
         post_author_id=post.find("a",class_ = "author")["data-from-id"] if post.find("a",class_ = "author")!=None else ""
-        print(post_author_id)
+
+        post_link=post.find("a",class_ = "post_link")["href"] if post.find("a",class_ = "post_link")!=None else ""
+
+        content_type = True if (post.find("div",class_="copy_quote"))==None else False #true - post; fasle - repost
+        content_type = "post" if content_type==True else "repost"
+        
+        post_text = post.find("div",class_="wall_post_text") if post.find("div",class_="wall_post_text")!=None else "" #text of the post 
+        #Adding emojis to the text
+        if post_text!="":
+            emoji = post_text.select('img.emoji')
+            if emoji:
+                for em in emoji:
+                    if em in post_text:
+                        index = post_text.contents.index(em)
+                        post_text.contents[index].replace_with(em['alt'])
+            post_text = post_text.text
+        #Adding emojis to the text
+
+        post_source_text = ""
+        post_repost_comment = ""
+        post_source = ""
+
+        post_group_author = post.find("a",class_ = "wall_signed_by").text if post.find("a",class_ = "wall_signed_by")!=None else ""
+
+        post_likes = post.find("div",class_="PostButtonReactions__title _counter_anim_container").text if post.find("div",class_="PostButtonReactions__title _counter_anim_container")!=None and post.find("div",class_="PostButtonReactions__title _counter_anim_container").text!="" else 0
+        post_reposts = post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")!=None else 0
+        post_comments = post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")!=None else 0
+        post_date = post.find("span",class_="rel_date") if post.find("span",class_="rel_date")!=None else ""
+        post_views = post.find("div",class_="like_views like_views--inActionPanel")["title"] if post.find("div",class_="like_views like_views--inActionPanel")!=None else 0
+        post_views = str(post_views).split(" ")[0]
+
+
         if post_author_id!="":
             if post_author_id[0]=="-":
                 node_type_name = "VkGroup"
@@ -33,8 +131,10 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
                 node_type_name="VkAccount"
         if node_type_name!="":
             if node_type_name=="VkGroup":
+
                 page_description = soup.find("div",class_ = "page_description").text if soup.find("div",class_ = "page_description")!=None else ""
                 owner_followers=soup.find("div",class_ = "header_top clear_fix").find("span",class_="header_count fl_l").text if soup.find("div",class_ = "header_top clear_fix")!=None else 0 
+                
                 if owner_followers!=0:
                     owner_followers = owner_followers.replace(" ","")
             else:
@@ -52,26 +152,6 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
                     owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
                     owner_audio=owner_audio.replace(" ","")
 
-        post_link=post.find("a",class_ = "post_link")["href"] if post.find("a",class_ = "post_link")!=None else ""
-        content_type = True if (post.find("div",class_="copy_quote"))==None else False #true - post; fasle - repost
-        content_type = "post" if content_type==True else "repost"
-
-        post_text = post.find("div",class_="wall_post_text") if post.find("div",class_="wall_post_text")!=None else "" #text of the post 
-        
-        #Adding emojis to the text
-        if post_text!="":
-            emoji = post_text.select('img.emoji')
-            if emoji:
-                for em in emoji:
-                    if em in post_text:
-                        index = post_text.contents.index(em)
-                        post_text.contents[index].replace_with(em['alt'])
-            post_text = post_text.text
-        #Adding emojis to the text
-
-        post_source_text = ""
-        post_repost_comment = ""
-        post_source = ""
 
         if content_type == "repost":
             post_text = "" #if repost -> text = post_repost_comment
@@ -96,14 +176,7 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
                 post_source_text = post_source_text.text
             #Adding emojis to the text
 
-        post_group_author = post.find("a",class_ = "wall_signed_by").text if post.find("a",class_ = "wall_signed_by")!=None else ""
-
-        post_likes = post.find("div",class_="PostButtonReactions__title _counter_anim_container").text if post.find("div",class_="PostButtonReactions__title _counter_anim_container")!=None and post.find("div",class_="PostButtonReactions__title _counter_anim_container").text!="" else 0
-        post_reposts = post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg share _share")!=None else 0
-        post_comments = post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")['data-count'] if post.find("div",class_="PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap")!=None else 0
-        post_date = post.find("span",class_="rel_date") if post.find("span",class_="rel_date")!=None else ""
-        post_views = post.find("div",class_="like_views like_views--inActionPanel")["title"] if post.find("div",class_="like_views like_views--inActionPanel")!=None else 0
-        post_views = str(post_views).split(" ")[0]
+        
         if 'time' in post_date.attrs:
             post_date=post_date['time']
         else:
@@ -142,17 +215,7 @@ with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
                 #print("URL FOR PHOTO:"+str(url))
         
         #print("POST COMMENTS:")
-        comments = post.find_all("div",class_ = "reply_content")
-        comment_section= {}
-
-        for comment in comments:
-            comment_author = comment.find("a",class_ = "author").text if comment.find("a",class_ = "author")!=None else ""
-            comment_text = comment.find("div",class_ = "wall_reply_text").text if comment.find("div",class_ = "wall_reply_text")!=None else ""
-            comment_likes = comment.find("a",class_ = "like_btn")['data-count'] if comment.find("a",class_ = "like_btn")!=None else 0
-            if comment_author!="":
-                comment_container = {}
-                comment_container[comment_text] = comment_likes
-                comment_section[comment_author] = comment_container
+        
             #print(comment_author)
             #print(comment_text)
             #print(comment_likes)
