@@ -6,11 +6,6 @@ from bs4 import BeautifulSoup, Tag
 import json
 import sys
 
-result = []
-
-names=[]
-data={}
-
 def calculate_content(source):
     content_resource = source.find("div",class_="page_post_sized_thumbs")
     contents=[]
@@ -85,9 +80,7 @@ def get_info(name,parameters,source):
         return calculate_content(source)
     
     for i in range(len(parameters["class"])): #class is just for example, every parameter should contain equal elements
-        print(name)
         name = source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}") if source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}")!=None else f"{i}-step-not-found"
-        print(name)
         if parameters["variable"][i]!="" and name!= f"{i}-step-not-found" and f"{parameters['variable'][i]}" in name.attrs and parameters["recursive"][i]=="False":
             name = name[f"{parameters['variable'][i]}"]
             return name
@@ -118,73 +111,86 @@ def get_info(name,parameters,source):
             if(name!=f"{i}-step-not-found"):
                 source=name
             else:
+                return ""
                 break
-        
+    if name==original_name:
+        return ""
     return name
 
-a1=input()
-a2=input()
-a3=input()
+file_rules = open(f'{sys.argv[2]}')
+file_read = open(f"{sys.argv[3]}",encoding="cp1251")
+file_write=None
 
-f = open(f'{a3}')
-data=json.load(f)
+result = []
+data={}
+
+data=json.load(file_rules)
+
+if sys.argv[1]=="0":
+    # Writing to sample.json 
+    file_write= open(f'{sys.argv[4]}', 'a',encoding="utf-8", errors='ignore')
+
+
+src = file_read.read()
+soup = BeautifulSoup(src, "html.parser")
+
+posts = soup.find_all("div",class_ = "_post") # array of posts of the page
+
+for post in posts:
+    if post['class'].count("post")==0: #if the class name includes other blocks reply_wrap _reply_content etc.
+        continue
+
+    info = {}
+
+    for key in data:
+        if key.find("post")==-1:
+            info[key] = get_info(key,data[key],soup)
+        else:
+            info[key] = get_info(key,data[key],post)  
+
+    # ADDITIONAL CONFIGURATIONS 
+    if info["post_link"]!=None:
+        info["post_link"] = "vk.com"+info["post_link"]
     
-# Writing to sample.json 
-with open(f'{a2}', 'a',encoding="utf-8", errors='ignore') as file_write:
+    if info["post_likes"]=="":
+        info["post_likes"]=0
 
-    with open(f"{a1}",encoding="cp1251") as file:
-        src = file.read()
-    soup = BeautifulSoup(src, "html.parser")
+    if info["post_author_id"]!=None and info["post_author_id"]!="":
+        if info["post_author_id"][0]=="-":
+            info["node_type_name"] = "VkGroup"
+        else:
+            info["node_type_name"]="VkAccount"
 
-    posts = soup.find_all("div",class_ = "_post") # array of posts of the page
-
-    for post in posts:
-
-        info = {}
-
-        for key in data:
-            if key.find("post")==-1:
-                info[key] = get_info(key,data[key],soup)
-            else:
-                info[key] = get_info(key,data[key],post)  
-
-        # ADDITIONAL CONFIGURATIONS 
-        if info["post_link"]!=None:
-            info["post_link"] = "vk.com"+info["post_link"]
-
-        if info["post_author_id"]!=None and info["post_author_id"]!="":
-            if info["post_author_id"][0]=="-":
-                info["node_type_name"] = "VkGroup"
-            else:
-                info["node_type_name"]="VkAccount"
-
-        # #find_all("span",class_="header_count fl_l")
-        # owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else ""
-        # if owner_list_info!="":
-        #     owner_friends=owner_list_info[0].find("span",class_="header_count fl_l").text if owner_list_info[0]!=None else 0
-        #     owner_friends=owner_friends.replace(" ","")
-        #     owner_followers = owner_list_info[1].find("span",class_="header_count fl_l").text if owner_list_info[1]!=None else 0
-        #     owner_followers=owner_followers.replace(" ","")
-        #     owner_photo =owner_list_info[2].find("span",class_="header_count fl_l").text if owner_list_info[2]!=None else 0
-        #     owner_photo=owner_photo.replace(" ","")
-        #     owner_video = owner_list_info[3].find("span",class_="header_count fl_l").text if owner_list_info[3]!=None else 0
-        #     owner_video=owner_video.replace(" ","")
-        #     owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
-        #     owner_audio=owner_audio.replace(" ","")
+    # #find_all("span",class_="header_count fl_l")
+    # owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else ""
+    # if owner_list_info!="":
+    #     owner_friends=owner_list_info[0].find("span",class_="header_count fl_l").text if owner_list_info[0]!=None else 0
+    #     owner_friends=owner_friends.replace(" ","")
+    #     owner_followers = owner_list_info[1].find("span",class_="header_count fl_l").text if owner_list_info[1]!=None else 0
+    #     owner_followers=owner_followers.replace(" ","")
+    #     owner_photo =owner_list_info[2].find("span",class_="header_count fl_l").text if owner_list_info[2]!=None else 0
+    #     owner_photo=owner_photo.replace(" ","")
+    #     owner_video = owner_list_info[3].find("span",class_="header_count fl_l").text if owner_list_info[3]!=None else 0
+    #     owner_video=owner_video.replace(" ","")
+    #     owner_audio =owner_list_info[4].find("span",class_="header_count fl_l").text if owner_list_info[4]!=None else 0
+    #     owner_audio=owner_audio.replace(" ","")
 
 
-        # if content_type == "repost":
-        #     post_text = "" #if repost -> text = post_repost_comment
-        #     post_repost_comment = post.find("div",class_="published_comment")
-        #     post_repost_comment = post_repost_comment.find("div",class_="wall_post_text").text if post_repost_comment!=None else ""
-        #     post_text = post_repost_comment
+    # if content_type == "repost":
+    #     post_text = "" #if repost -> text = post_repost_comment
+    #     post_repost_comment = post.find("div",class_="published_comment")
+    #     post_repost_comment = post_repost_comment.find("div",class_="wall_post_text").text if post_repost_comment!=None else ""
+    #     post_text = post_repost_comment
 
 
-        #     post_source = post.find("a",class_="copy_author").text if post.find("a",class_="copy_author")!=None else ""
+    #     post_source = post.find("a",class_="copy_author").text if post.find("a",class_="copy_author")!=None else ""
 
-        #     post_source_text = post.find("div",class_="copy_quote") #finding text of the post
-        #     post_source_text = post_source_text.find("div",class_="wall_post_text") if post_source_text!=None and post_source_text.find("div",class_="wall_post_text")!=None else ""
-            
-        result.append(info)
+    #     post_source_text = post.find("div",class_="copy_quote") #finding text of the post
+    #     post_source_text = post_source_text.find("div",class_="wall_post_text") if post_source_text!=None and post_source_text.find("div",class_="wall_post_text")!=None else ""
+        
+    result.append(info)
+if file_write!=None:
     json.dump(result,file_write,ensure_ascii=False)
+else:
+    print(result)
 #file_write.write(json_object)
