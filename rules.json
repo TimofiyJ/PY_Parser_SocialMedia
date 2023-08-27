@@ -18,6 +18,6 @@
     "post_comments":{"id":["",""],"class":["PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap","PostBottomAction PostBottomAction--withBg comment _comment _reply_wrap empty"],"variable":["data-count","data-count"],"tag":["div","div"],"recursive":["False","False"]},
     "post_views":{"id":["",""],"class":["like_views like_views--inActionPanel","_views"],"variable":["title",""],"tag":["div","span"],"recursive":["True","False"]},
     "post_date":{"id":[""],"class":["rel_date rel_date_needs_update"],"variable":["time"],"tag":["span"],"recursive":["False"]},
-    "post_comments_info":{"id":[""],"class":["reply_content"],"variable":[""],"tag":["div"], "comment_author":{"id":[""],"class":["author"],"variable":[""],"tag":["a"]},"comment_text":{"id":[""],"class":["wall_reply_text"],"variable":[""],"tag":["div"]},"comment_likes":{"id":[""],"class":["like_btn like _like"],"variable":[""],"tag":["a"]},"recursive":["False"]},
+    "post_comments_info":{"id":[""],"class":["reply_content"],"variable":[""],"tag":["div"], "comment_author":{"id":[""],"class":["author"],"variable":[""],"tag":["a"]},"comment_text":{"id":[""],"class":["wall_reply_text"],"variable":[""],"tag":["div"]},"comment_likes":{"id":[""],"class":["like_btn like _like"],"variable":["data-count"],"tag":["a"]},"recursive":["False"]},
     "post_content_result":{"id":[""],"class":[""],"variable":[""],"tag":[""],"recursive":["False"]}
 }
