@@ -1,7 +1,4 @@
-import codecs
-import bs4
 import cssutils
-import os
 from bs4 import BeautifulSoup, Tag
 import json
 import sys
@@ -46,20 +43,20 @@ def calculate_comments(comment_rule, author_rule, text_rule, likes_rule, source)
     for i in range(len(comment_rule["class"])):
         comments = source.find_all(f"{comment_rule['tag'][i]}",class_=f"{comment_rule['class'][i]}",id=f"{comment_rule['id'][i]}")
         for comment in comments:
-            comment_author = comment.find(f"{author_rule['tag'][i]}",class_=f"{author_rule['class'][i]}",id=f"{author_rule['id'][i]}") if comment.find(f"{author_rule['tag'][i]}",class_=f"{author_rule['class'][i]}",id=f"{author_rule['id'][i]}")!=None else f"{i}-step-not-found"
-            if author_rule["variable"][i]!="" and comment_author!= f"{i}-step-not-found" and f"{author_rule['variable'][i]}" in comment_author.attrs:
+            comment_author = comment.find(f"{author_rule['tag'][i]}",class_=f"{author_rule['class'][i]}",id=f"{author_rule['id'][i]}") if comment.find(f"{author_rule['tag'][i]}",class_=f"{author_rule['class'][i]}",id=f"{author_rule['id'][i]}")!=None else ""
+            if author_rule["variable"][i]!="" and comment_author!= "" and f"{author_rule['variable'][i]}" in comment_author.attrs:
                 comment_author = comment_author[f"{author_rule['variable'][i]}"]
             else:
                 if comment_author.text!=None:
                     comment_author = comment_author.text
-            comment_text = comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}") if comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}")!=None else f"{i}-step-not-found"
-            if text_rule["variable"][i]!="" and comment_text!= f"{i}-step-not-found" and f"{text_rule['variable'][i]}" in comment_text.attrs:
+            comment_text = comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}") if comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}")!=None else ""
+            if text_rule["variable"][i]!="" and comment_text!= "" and f"{text_rule['variable'][i]}" in comment_text.attrs:
                 comment_text = comment_text[f"{text_rule['variable'][i]}"]
             else:
                 if comment_text.text!=None:
                     comment_text = comment_text.text
-            comment_likes = comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}") if comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}")!=None else f"{i}-step-not-found"
-            if likes_rule["variable"][i]!="" and comment_likes!= f"{i}-step-not-found" and f"{likes_rule['variable'][i]}" in comment_likes.attrs:
+            comment_likes = comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}") if comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}")!=None else ""
+            if likes_rule["variable"][i]!="" and comment_likes!= "" and f"{likes_rule['variable'][i]}" in comment_likes.attrs:
                 comment_likes = comment_likes[f"{likes_rule['variable'][i]}"]
             else:
                 if comment_likes.text!=None:
@@ -80,16 +77,16 @@ def get_info(name,parameters,source):
         return calculate_content(source)
     
     for i in range(len(parameters["class"])): #class is just for example, every parameter should contain equal elements
-        name = source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}") if source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}")!=None else f"{i}-step-not-found"
-        if parameters["variable"][i]!="" and name!= f"{i}-step-not-found" and f"{parameters['variable'][i]}" in name.attrs and parameters["recursive"][i]=="False":
+        name = source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}") if source.find(f"{parameters['tag'][i]}",class_=f"{parameters['class'][i]}",id=f"{parameters['id'][i]}")!=None else ""
+        if parameters["variable"][i]!="" and name!= "" and f"{parameters['variable'][i]}" in name.attrs and parameters["recursive"][i]=="False":
             name = name[f"{parameters['variable'][i]}"]
             return name
             #can add ere if name=="" -> name=0
 
-        elif parameters["variable"][i]!="" and (name== f"{i}-step-not-found" or f"{parameters['variable'][i]}" not in name.attrs):
-            name = f"{i}-step-not-found"
+        elif parameters["variable"][i]!="" and (name== "" or f"{parameters['variable'][i]}" not in name.attrs):
+            name = ""
         
-        if name!=f"{i}-step-not-found" and parameters["recursive"][i]=="False":
+        if name!="" and parameters["recursive"][i]=="False":
             if type(name) == Tag:
                 if original_name=="post_text":
                     #Adding emojis to the text
@@ -104,11 +101,11 @@ def get_info(name,parameters,source):
                 name=name.text
             return name
         
-        if name!=f"{i}-step-not-found" and parameters["recursive"][i]=="False":
+        if name!="" and parameters["recursive"][i]=="False":
             return name
         
         if parameters["recursive"][i]=="True":
-            if(name!=f"{i}-step-not-found"):
+            if(name!=""):
                 source=name
             else:
                 return ""
@@ -151,10 +148,7 @@ for post in posts:
     # ADDITIONAL CONFIGURATIONS 
     if info["post_link"]!=None:
         info["post_link"] = "vk.com"+info["post_link"]
-    
-    if info["post_likes"]=="":
-        info["post_likes"]=0
-
+        
     if info["post_author_id"]!=None and info["post_author_id"]!="":
         if info["post_author_id"][0]=="-":
             info["node_type_name"] = "VkGroup"
