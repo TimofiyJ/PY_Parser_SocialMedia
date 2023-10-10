@@ -29,7 +29,10 @@ def calculate_content(source):
         style = cssutils.parseStyle(content['style'])
         url = style['background-image']
         url = url.split("(")
-        url = url[1].replace(")", "")
+        if len(url)>1 and url[1]!=None:
+            url = url[1].replace(")", "")
+        else:
+            url=""
         if url!="":
             content_number=+1
             content_type = "photo"
@@ -47,21 +50,26 @@ def calculate_comments(comment_rule, author_rule, text_rule, likes_rule, source)
             if author_rule["variable"][i]!="" and comment_author!= "" and f"{author_rule['variable'][i]}" in comment_author.attrs:
                 comment_author = comment_author[f"{author_rule['variable'][i]}"]
             else:
-                if comment_author.text!=None:
+                if type(comment_author) not in [str] and comment_author.text!=None:
                     comment_author = comment_author.text
             comment_text = comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}") if comment.find(f"{text_rule['tag'][i]}",class_=f"{text_rule['class'][i]}",id=f"{text_rule['id'][i]}")!=None else ""
             if text_rule["variable"][i]!="" and comment_text!= "" and f"{text_rule['variable'][i]}" in comment_text.attrs:
                 comment_text = comment_text[f"{text_rule['variable'][i]}"]
             else:
-                if comment_text.text!=None:
+                if type(comment_author) not in [str] and comment_text.text!=None:
                     comment_text = comment_text.text
             comment_likes = comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}") if comment.find(f"{likes_rule['tag'][i]}",class_=f"{likes_rule['class'][i]}",id=f"{likes_rule['id'][i]}")!=None else ""
             if likes_rule["variable"][i]!="" and comment_likes!= "" and f"{likes_rule['variable'][i]}" in comment_likes.attrs:
                 comment_likes = comment_likes[f"{likes_rule['variable'][i]}"]
             else:
-                if comment_likes.text!=None:
+                if type(comment_author) not in [str] and comment_likes.text!=None:
                     comment_likes = comment_likes.text
             if comment_author!="":
+                if type(comment_author) not in [str]:
+                    comment_author = comment_author.text
+                if type(comment_text) not in [str]:
+                    comment_text = comment_text.text
+
                 comment_container = {}
                 comment_container[comment_text] = comment_likes
                 comment_section[comment_author] = comment_container
@@ -90,7 +98,7 @@ def get_info(name,parameters,source):
             if type(name) == Tag:
                 if original_name=="post_text":
                     #Adding emojis to the text
-                    if name.text!="":
+                    if name.text!=None or name.text!="":
                         emoji = name.select('img.emoji')
                         if emoji:
                             for em in emoji:
@@ -154,6 +162,13 @@ for post in posts:
             info["node_type_name"] = "VkGroup"
         else:
             info["node_type_name"]="VkAccount"
+    if info["post_views"]!=None:
+        if info["post_views"].count(".")>=1:
+            info["post_views"] = info["post_views"].replace("K","00")
+            info["post_views"] = info["post_views"].replace(".","")
+        else:
+            info["post_views"] = info["post_views"].replace("K","000")
+
 
     # #find_all("span",class_="header_count fl_l")
     # owner_list_info = soup.find_all("div",class_ = "header_top clear_fix") if soup.find("div",class_ = "header_top clear_fix") else ""
