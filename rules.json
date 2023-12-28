@@ -15,17 +15,17 @@
   },
   "post_author_id": {
     "id": [""],
-    "class": ["PostHeaderTitle__authorLink"],
-    "variable": ["data-from-id"],
-    "tag": ["a"],
-    "recursive": ["False"]
+    "class": [""],
+    "variable": [""],
+    "tag": [""],
+    "recursive": [""]
   },
   "post_id": {
     "id": [""],
-    "class": ["PostHeaderTitle__authorLink"],
-    "variable": ["data-post-id"],
-    "tag": ["a"],
-    "recursive": ["False"]
+    "class": [""],
+    "variable": [""],
+    "tag": [""],
+    "recursive": [""]
   },
   "post_link": {
     "id": [""],
@@ -175,5 +175,19 @@
     "variable": [""],
     "tag": [""],
     "recursive": ["False"]
+  },
+  "group_author": {
+    "id": ["", ""],
+    "class": ["chat-info-container", "user-title"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
+  },
+  "group_link": {
+    "id": ["", ""],
+    "class": ["profile-content", "row-title"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
   }
 }
