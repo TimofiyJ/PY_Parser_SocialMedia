@@ -1,9 +1,9 @@
 {
   "post_array": {
     "id": [""],
-    "class": ["bubbles-date-group"],
+    "class": ["bubbles-group"],
     "variable": [""],
-    "tag": ["section"],
+    "tag": ["div"],
     "recursive": ["False"]
   },
   "post_author": {
@@ -137,9 +137,7 @@
   },
   "post_date": {
     "id": [""],
-    "class": [
-      "bubble channel-post with-beside-button with-replies hide-name is-in can-have-tail is-group-first is-group-last"
-    ],
+    "class": ["bubble channel-post with-beside-button"],
     "variable": ["data-timestamp"],
     "tag": ["div"],
     "recursive": ["False"]

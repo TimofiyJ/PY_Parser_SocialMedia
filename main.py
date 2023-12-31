@@ -1,5 +1,5 @@
 import cssutils
-from bs4 import BeautifulSoup, Tag
+from bs4 import BeautifulSoup, Tag, Comment
 import json
 import sys
 
@@ -229,12 +229,21 @@ if sys.argv[1] == "0":
 
 src = file_read.read()
 soup = BeautifulSoup(src, "html.parser")
+
 posts = soup.find_all(
     data["post_array"]["tag"][0], class_=data["post_array"]["class"][0]
 )  # array of posts of the page
-print(len(posts))
+source_type = "VK" if soup.find("title").text != "Telegram Web" else "TG"
+group_link = ""
+
+if source_type == "TG":
+    comments = soup.find_all(string=lambda text: isinstance(text, Comment))
+    for c in comments:
+        if c.find("saved from"):
+            group_link = "https" + c.split("https")[1]
+            break
+
 for post in posts:
-    
     info = {}
 
     for key in data:
@@ -244,10 +253,16 @@ for post in posts:
             info[key] = get_info(key, data[key], post)
 
     # ADDITIONAL CONFIGURATIONS
-    if info["post_link"] is not None:
+    if source_type == "TG":
+        info["group_link"] = group_link
+    if info["post_link"] is not None and source_type == "VK":
         info["post_link"] = "vk.com" + info["post_link"]
 
-    if info["post_author_id"] is not None and info["post_author_id"] != "":
+    if (
+        info["post_author_id"] is not None
+        and info["post_author_id"] != ""
+        and source_type == "VK"
+    ):
         if info["post_author_id"][0] == "-":
             info["node_type_name"] = "VkGroup"
         else:
