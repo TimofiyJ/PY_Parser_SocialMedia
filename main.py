@@ -229,11 +229,18 @@ if sys.argv[1] == "0":
 
 src = file_read.read()
 soup = BeautifulSoup(src, "html.parser")
+source_type = "VK" if soup.find("title").text != "Telegram Web" else "TG"
+
+if source_type == "VK":
+    file_read = open(f"{sys.argv[3]}", encoding="cp1251", errors="ignore")
+    src = file_read.read()
+    soup = BeautifulSoup(src, "html.parser")
+
 
 posts = soup.find_all(
     data["post_array"]["tag"][0], class_=data["post_array"]["class"][0]
 )  # array of posts of the page
-source_type = "VK" if soup.find("title").text != "Telegram Web" else "TG"
+
 group_link = ""
 
 if source_type == "TG":
@@ -245,7 +252,6 @@ if source_type == "TG":
 
 for post in posts:
     info = {}
-
     for key in data:
         if key.find("post") == -1:
             info[key] = get_info(key, data[key], soup)
@@ -255,6 +261,9 @@ for post in posts:
     # ADDITIONAL CONFIGURATIONS
     if source_type == "TG":
         info["group_link"] = group_link
+        info["node_type_name"] = "TelegramGroup"
+        if info["post_date"] == "":
+            info["post_date"] = post.find("div")["data-timestamp"]
     if info["post_link"] is not None and source_type == "VK":
         info["post_link"] = "vk.com" + info["post_link"]
 
