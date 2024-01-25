@@ -1,0 +1,191 @@
+{
+  "post_array": {
+    "id": [""],
+    "class": ["bubbles-group"],
+    "variable": [""],
+    "tag": ["div"],
+    "recursive": ["False"]
+  },
+  "post_author": {
+    "id": ["", ""],
+    "class": ["chat-info-container", "user-title"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
+  },
+  "post_author_id": {
+    "id": [""],
+    "class": [""],
+    "variable": [""],
+    "tag": [""],
+    "recursive": [""]
+  },
+  "post_id": {
+    "id": [""],
+    "class": [""],
+    "variable": [""],
+    "tag": [""],
+    "recursive": [""]
+  },
+  "post_link": {
+    "id": [""],
+    "class": ["PostHeaderSubtitle__link"],
+    "variable": ["href"],
+    "tag": ["a"],
+    "recursive": ["False"]
+  },
+  "post_source": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "page_description": {
+    "id": [""],
+    "class": ["line_value"],
+    "variable": [""],
+    "tag": ["div"],
+    "recursive": ["False"]
+  },
+  "owner_friends": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "owner_followers_group": {
+    "id": ["", ""],
+    "class": ["chat-info-container", "info"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
+  },
+  "owner_followers": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "owner_photo": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "owner_video": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "owner_audio": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "post_source_text": {
+    "id": [],
+    "class": [],
+    "variable": [],
+    "tag": [],
+    "recursive": ["False"]
+  },
+  "post_text": {
+    "id": [""],
+    "class": ["message spoilers-container"],
+    "variable": [""],
+    "tag": ["div"],
+    "recursive": ["False"]
+  },
+  "post_likes": {
+    "id": [""],
+    "class": ["PostButtonReactions__title _counter_anim_container"],
+    "variable": [""],
+    "tag": ["div"],
+    "recursive": ["False"]
+  },
+  "post_reposts": {
+    "id": ["", ""],
+    "class": [
+      "PostBottomAction PostBottomAction--withBg share _share",
+      "PostBottomAction PostBottomAction--withBg share _share empty"
+    ],
+    "variable": ["data-count", "data-count"],
+    "tag": ["div", "div"],
+    "recursive": ["False", "False"]
+  },
+  "post_comments": {
+    "id": ["", ""],
+    "class": ["replies replies-footer", "replies-footer-text"],
+    "variable": ["", ""],
+    "tag": ["replies-element", "span"],
+    "recursive": ["True", "False"]
+  },
+  "post_views": {
+    "id": ["", "", ""],
+    "class": ["reactions reactions-block", "time", "post-views"],
+    "variable": ["", "", ""],
+    "tag": ["reactions-element", "span", "span"],
+    "recursive": ["True", "True", "False"]
+  },
+  "post_date": {
+    "id": [""],
+    "class": ["bubble channel-post "],
+    "variable": ["data-timestamp"],
+    "tag": ["div"],
+    "recursive": ["False"]
+  },
+  "post_comments_info": {
+    "id": [""],
+    "class": ["reply_content"],
+    "variable": [""],
+    "tag": ["div"],
+    "comment_author": {
+      "id": [""],
+      "class": ["author"],
+      "variable": [""],
+      "tag": ["a"]
+    },
+    "comment_text": {
+      "id": [""],
+      "class": ["wall_reply_text"],
+      "variable": [""],
+      "tag": ["div"]
+    },
+    "comment_likes": {
+      "id": [""],
+      "class": ["like_btn like _like"],
+      "variable": ["data-count"],
+      "tag": ["a"]
+    },
+    "recursive": ["False"]
+  },
+  "post_content_result": {
+    "id": [""],
+    "class": [""],
+    "variable": [""],
+    "tag": [""],
+    "recursive": ["False"]
+  },
+  "group_author": {
+    "id": ["", ""],
+    "class": ["chat-info-container", "user-title"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
+  },
+  "group_link": {
+    "id": ["", ""],
+    "class": ["profile-content", "row-title"],
+    "variable": ["", ""],
+    "tag": ["div", "div"],
+    "recursive": ["True", "False"]
+  }
+}
