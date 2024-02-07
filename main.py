@@ -239,7 +239,6 @@ def get_info(name, parameters, source):
             return name
 
         if name != "" and parameters["recursive"][i] == "False":
-
             return name
 
         if parameters["recursive"][i] == "True":
@@ -249,10 +248,13 @@ def get_info(name, parameters, source):
                 name = ""
 
         if i == len(parameters["class"]) - 1:
+            if name == original_name:
+                name = ""
             return name
         else:  # was Recursive but didn't find anything inside
             source = original_source
-
+    if name == original_name:
+        name = ""
     return name
 
 
