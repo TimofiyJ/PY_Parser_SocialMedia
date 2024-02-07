@@ -56,11 +56,11 @@
     "recursive": ["False"]
   },
   "owner_followers_group": {
-    "id": ["", ""],
-    "class": ["redesigned-group-subscribers", ""],
-    "variable": ["", ""],
-    "tag": ["div", "span"],
-    "recursive": ["True", "False"]
+    "id": [""],
+    "class": ["redesigned-group-subscribers"],
+    "variable": [""],
+    "tag": ["div"],
+    "recursive": ["False"]
   },
   "owner_followers": {
     "id": [],

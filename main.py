@@ -1,6 +1,7 @@
 import cssutils
 from bs4 import BeautifulSoup, Tag, Comment
 import json
+import re
 import sys
 
 
@@ -149,24 +150,6 @@ def get_info(name, parameters, source):
         )
     if name == "post_content_result":
         return calculate_content(source)
-    # if name == "post_date":
-    #     # print(source)
-    #     name = (
-    #         source.find(
-    #             f"{parameters['tag'][0]}",
-    #             class_=f"{parameters['class'][0]}",
-    #             id=f"{parameters['id'][0]}",
-    #         )
-    #         if source.find(
-    #             f"{parameters['tag'][0]}",
-    #             class_=f"{parameters['class'][0]}",
-    #             id=f"{parameters['id'][0]}",
-    #         )
-    #         is not None
-    #         else ""
-    #     )
-    #     print(name)
-    #     return name
 
     for i in range(
         len(parameters["class"])
@@ -345,6 +328,10 @@ for post in posts:
             info["owner_followers_group"] = info["owner_followers_group"].replace(
                 "K", "000"
             )
+        info["owner_followers_group"] = re.sub(
+            r"[^0-9]", "", info["owner_followers_group"]
+        )
+
     result.append(info)
 if file_write is not None:
     json.dump(result, file_write, ensure_ascii=False)
