@@ -138,7 +138,7 @@ def calculate_comments(comment_rule, author_rule, text_rule, likes_rule, source)
 
 def get_info(name, parameters, source):
     original_name = name
-
+    original_source = source
     if name == "post_comments_info":
         return calculate_comments(
             parameters,
@@ -149,10 +149,50 @@ def get_info(name, parameters, source):
         )
     if name == "post_content_result":
         return calculate_content(source)
+    # if name == "post_date":
+    #     # print(source)
+    #     name = (
+    #         source.find(
+    #             f"{parameters['tag'][0]}",
+    #             class_=f"{parameters['class'][0]}",
+    #             id=f"{parameters['id'][0]}",
+    #         )
+    #         if source.find(
+    #             f"{parameters['tag'][0]}",
+    #             class_=f"{parameters['class'][0]}",
+    #             id=f"{parameters['id'][0]}",
+    #         )
+    #         is not None
+    #         else ""
+    #     )
+    #     print(name)
+    #     return name
 
     for i in range(
         len(parameters["class"])
     ):  # class is just for example, every parameter should contain equal elements
+        # special condition for post reactions in TG
+        if original_name == "post_reactions":
+            reaction_amount = (
+                source.find_all(
+                    f"{parameters['tag'][i]}",
+                    class_=f"{parameters['class'][i]}",
+                    id=f"{parameters['id'][i]}",
+                )
+                if source.find(
+                    f"{parameters['tag'][i]}",
+                    class_=f"{parameters['class'][i]}",
+                    id=f"{parameters['id'][i]}",
+                )
+                is not None
+                else 0
+            )
+            if reaction_amount == 0:
+                return 0
+
+            reaction_amount = [int(reaction.text) for reaction in reaction_amount]
+            return sum(reaction_amount)
+
         name = (
             source.find(
                 f"{parameters['tag'][i]}",
@@ -167,6 +207,7 @@ def get_info(name, parameters, source):
             is not None
             else ""
         )
+
         if (
             parameters["variable"][i] != ""
             and name != ""
@@ -198,16 +239,20 @@ def get_info(name, parameters, source):
             return name
 
         if name != "" and parameters["recursive"][i] == "False":
+
             return name
 
         if parameters["recursive"][i] == "True":
             if name != "":
                 source = name
             else:
-                return ""
-                break
-    if name == original_name:
-        return ""
+                name = ""
+
+        if i == len(parameters["class"]) - 1:
+            return name
+        else:  # was Recursive but didn't find anything inside
+            source = original_source
+
     return name
 
 
@@ -251,6 +296,10 @@ if source_type == "TG":
             break
 
 for post in posts:
+    if (
+        source_type == "VK" and post["class"].count("post") == 0
+    ):  # if the class name includes other blocks reply_wrap _reply_content etc.
+        continue
     info = {}
     for key in data:
         if key.find("post") == -1:
@@ -282,9 +331,22 @@ for post in posts:
             info["post_views"] = info["post_views"].replace(".", "")
         else:
             info["post_views"] = info["post_views"].replace("K", "000")
+    if info["owner_followers_group"] is not None:
+        if info["owner_followers_group"].count(".") >= 1:
+            info["owner_followers_group"] = info["owner_followers_group"].replace(
+                "K", "00"
+            )
+            info["owner_followers_group"] = info["owner_followers_group"].replace(
+                ".", ""
+            )
+        else:
+            info["owner_followers_group"] = info["owner_followers_group"].replace(
+                "K", "000"
+            )
     result.append(info)
 if file_write is not None:
     json.dump(result, file_write, ensure_ascii=False)
 else:
     print(result)
 # file_write.write(json_object)
+# 1697022880
