@@ -48,6 +48,13 @@
     "tag": ["div"],
     "recursive": ["False"]
   },
+  "post_reactions": {
+    "id": [""],
+    "class": ["reaction-counter"],
+    "variable": [""],
+    "tag": ["span"],
+    "recursive": ["False"]
+  },
   "owner_friends": {
     "id": [],
     "class": [],
