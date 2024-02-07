@@ -139,11 +139,15 @@
     "recursive": ["True", "False"]
   },
   "post_date": {
-    "id": [""],
-    "class": ["rel_date rel_date_needs_update"],
-    "variable": ["time"],
-    "tag": ["span"],
-    "recursive": ["False"]
+    "id": ["", "", ""],
+    "class": [
+      "PostHeaderSubtitle__item",
+      "rel_date rel_date_needs_update",
+      "PostHeaderSubtitle__item"
+    ],
+    "variable": ["", "time", ""],
+    "tag": ["time", "span", "time"],
+    "recursive": ["True", "False", "False"]
   },
   "post_comments_info": {
     "id": [""],
