@@ -277,7 +277,10 @@ if source_type == "TG":
     comments = soup.find_all(string=lambda text: isinstance(text, Comment))
     for c in comments:
         if c.find("saved from"):
-            group_link = "https" + c.split("https")[1]
+            if "https" in c:
+                group_link = "https" + c.split("https")[1]
+            else:
+                group_link = c
             break
 
 for post in posts:
@@ -297,7 +300,7 @@ for post in posts:
         info["group_link"] = group_link
         info["node_type_name"] = "TelegramGroup"
         if info["post_date"] == "":
-            info["post_date"] = post.find("div")["data-timestamp"]
+            info["post_date"] = post.find("div")["data-timestamp"] if "data-timestamp" in post.find("div") else ""
     if info["post_link"] is not None and source_type == "VK":
         info["post_link"] = "vk.com" + info["post_link"]
 
